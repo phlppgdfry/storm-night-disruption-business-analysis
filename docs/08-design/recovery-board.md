@@ -2,9 +2,18 @@
 
 > **What this is:** the screens of release 1, the design decisions behind them and how they were checked with users. **For:** duty manager (S-04), customer service (S-03), developers. **Previous:** [prioritisation](../07-backlog/prioritisation.md) · **Next:** [storm drill (BAT)](../09-acceptance/storm-drill.md).
 
-*Fictional. The screens are a clickable prototype on the [war room](https://phlppgdfry.github.io/storm-night-disruption-business-analysis/war-room/?tab=board) page, running on the real allocation module with Storm Kestrel's freight — not a mock-up with invented rows.*
+*Fictional. The five screens exist twice: as a [Figma file](https://www.figma.com/design/yIkhJZeEEmHT9Eaxd2Amzc) (colour tokens, components for button, chip, count and unit row; previews below) and as a clickable prototype on the [war room](https://phlppgdfry.github.io/storm-night-disruption-business-analysis/war-room/?tab=board) page, running on the real allocation module with Storm Kestrel's freight — not a mock-up with invented rows.*
 
 ## Screens
+
+| | |
+|---|---|
+| ![SCR-01 Recovery board](figma/scr-01-recovery-board.png) | ![SCR-02 Why-panel](figma/scr-02-why-panel.png) |
+| ![SCR-03 Override dialog](figma/scr-03-override-dialog.png) | ![SCR-04 Customer message and driver text](figma/scr-04-messages.png) |
+| ![SCR-05 Storm report](figma/scr-05-storm-report.png) | ![Read-me frame of the Figma file](figma/00-read-me.png) |
+
+The Figma screens use the plan the allocation module builds at Thu 16:20 on night #12: the sailings, capacities, counts and the reasons for U-0016 are the module's output, not invented rows.
+
 
 | ID | Screen | Stories | Main user |
 |---|---|---|---|
@@ -18,7 +27,7 @@
 
 ```text
 ┌ Storm Kestrel · plan proposed Thu 16:20 · 859 units ─────────── [ Approve plan ] ┐
-│ Confirmed 0 · Planned 820 · Held (customs) 39 · Escalated 0 · Overrides 0        │
+│ Confirmed 0 · Planned 818 · Held (customs) 41 · Escalated 0 · Overrides 0        │
 ├──────────────────────────────────────────────────────────────────────────────────┤
 │ Sailing   Departs     Lane metres        Plugs      ADR     Units               │
 │ TW-27     Fri 08:00   ████████████ 1292  ███ 22/22  ██ 4/4   79                  │

@@ -55,7 +55,7 @@ Simulate & decide       200 nights · 4 policies · business case as a range · 
    ↓
 Backlog                 17 stories, acceptance criteria, WSJF — and where the PO overruled it
    ↓
-Design                  recovery board, why-panel, override dialog, messages — clickable on real data
+Design                  recovery board, why-panel, override dialog, messages — in Figma and clickable on real data
    ↓
 Accept                  storm drill as BAT · a severity-1 finding in my own rules → R-16
    ↓
@@ -71,7 +71,7 @@ Go live & measure       pre-mortem · shadow mode · go/no-go · rollback · hyp
 - **Wrote rules precise enough to test**, and the examples that test them — [rules](docs/05-rules/allocation-rules.md)
 - **Built the business case as a range**, counted only goodwill paid (weather is force majeure), and named what the redesign cannot fix — [business case](docs/06-simulation/business-case.md)
 - **Prepared the backlog with the PO** — [stories](docs/07-backlog/epics-and-stories.md), [prioritisation](docs/07-backlog/prioritisation.md)
-- **Designed and validated the screens** in four rounds — [design](docs/08-design/recovery-board.md), [prototype](https://phlppgdfry.github.io/storm-night-disruption-business-analysis/war-room/?tab=board)
+- **Designed and validated the screens** in four rounds — [design](docs/08-design/recovery-board.md), [Figma](https://www.figma.com/design/yIkhJZeEEmHT9Eaxd2Amzc), [prototype](https://phlppgdfry.github.io/storm-night-disruption-business-analysis/war-room/?tab=board)
 - **Ran business acceptance as a storm drill** and owned the defect it found in my own rules — [storm drill](docs/09-acceptance/storm-drill.md)
 - **Prepared go-live** with a pre-mortem, shadow mode and a benefits review that replaces assumptions with measurements — [pre-mortem](docs/10-go-live/premortem.md), [readiness](docs/10-go-live/readiness.md), [benefits review](docs/11-measure/benefits-review.md)
 
