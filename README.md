@@ -84,7 +84,7 @@ Go live & measure       pre-mortem · shadow mode · go/no-go · rollback · hyp
 | `site/` | GitHub Pages: landing, war room (replay · recovery board · policy lab), business case, trace explorer, process |
 
 ```bash
-node --test tests/*.test.mjs        # 41 tests: examples, invariants, trace, document claims
+node --test tests/*.test.mjs        # 42 tests: examples, invariants, trace, document claims
 node scripts/build-results.mjs      # re-run 200 + 200 nights and the tornado (±1 min)
 node scripts/check-trace.mjs        # traceability chain
 python3 -m http.server -d site      # the site, locally
