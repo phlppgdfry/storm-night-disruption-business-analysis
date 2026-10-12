@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Storm Night Trace</title>
+  <meta name="description" content="Pull any thread: from the stakeholder who said it to the pain, goal, KPI, rule, story, executable example and screen. Enforced in CI.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="../"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#24508f"/><path d="M10 40c6-6 12-6 18 0s12 6 18 0 8-5 8-5" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>Storm Night</a>
+      <nav aria-label="Main">
+        <a href="../war-room/">War room</a>
+        <a href="../numbers/">Business case</a>
+        <a href="./" aria-current="page">Trace</a>
+        <a href="../process/">Process</a>
+        <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis">Repository</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="sub-hero">
+      <p class="crumbs"><a href="../">Storm Night</a> / Trace</p>
+      <h1>Pull any thread</h1>
+      <p class="lede">Every requirement in this case can be followed from the person who asked for it to the test that proves it. Click a node: everything it comes from and everything it leads to lights up. The build fails if any link is missing.</p>
+      <div class="cta-row">
+        <button class="btn" type="button" data-pick="Q-05">The strawberries (Q-05)</button>
+        <button class="btn" type="button" data-pick="R-15">A rule found by simulation (R-15)</button>
+        <button class="btn" type="button" data-pick="SC-23">A test from the storm drill (SC-23)</button>
+        <button class="btn" type="button" id="clear">Clear</button>
+      </div>
+      <p class="small" id="counts"></p>
+    </section>
+    <div class="grid" style="grid-template-columns:minmax(0,1fr);gap:16px">
+      <div class="trace-wrap"><div class="trace" id="trace"><svg class="edges" id="edges" aria-hidden="true"></svg></div></div>
+      <aside class="panel" id="tpanel" aria-live="polite"><div class="panel-b small">Select a node to see its chain.</div></aside>
+    </div>
+    <p class="small" style="margin-top:16px">Source: <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis/blob/main/model/trace.json"><code>model/trace.json</code></a>, checked by <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis/blob/main/scripts/check-trace.mjs"><code>scripts/check-trace.mjs</code></a>. Explanation: <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis/blob/main/docs/traceability.md">docs/traceability.md</a>.</p>
+  </main>
+  <footer class="site-footer"><div class="wrap">Fictional organisation and people; illustrative figures. · <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis">Source</a></div></footer>
+  <script type="module">
+    const g = await fetch("../data/trace.json").then((r) => r.json());
+    const NAMES = { stakeholder: "Who", quote: "Said", pain: "Pain", goal: "Goal", kpi: "KPI", rule: "Rule", story: "Story", scenario: "Executable example", bat: "BAT case", screen: "Screen" };
+    const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+    const trace = document.getElementById("trace");
+    const svg = document.getElementById("edges");
+    const byId = new Map(g.nodes.map((n) => [n.id, n]));
+    const out = new Map(), inn = new Map();
+    for (const [a, b] of g.edges) {
+      (out.get(a) ?? out.set(a, []).get(a)).push(b);
+      (inn.get(b) ?? inn.set(b, []).get(b)).push(a);
+    }
+    const c = g.counts;
+    document.getElementById("counts").textContent = `${c.stakeholder} people · ${c.quote} voices · ${c.pain} pains · ${c.goal} goals · ${c.kpi} KPIs · ${c.rule} rules · ${c.story} stories · ${c.scenario} executable examples · ${c.bat} BAT cases · ${c.screen} screens · ${g.edges.length} links`;
+    for (const col of g.columns) {
+      const div = document.createElement("div");
+      div.className = "tcol";
+      div.innerHTML = `<h3>${NAMES[col]}</h3>` + g.nodes.filter((n) => n.kind === col).map((n) => `<button class="tnode" type="button" data-id="${n.id}"><b>${n.id}</b><span>${esc(n.label)}</span></button>`).join("");
+      trace.appendChild(div);
+    }
+    const walk = (start, map) => {
+      const seen = new Set([start]);
+      const todo = [start];
+      while (todo.length) for (const x of map.get(todo.pop()) ?? []) if (!seen.has(x)) { seen.add(x); todo.push(x); }
+      return seen;
+    };
+    let sel = null;
+    function drawEdges(on) {
+      const box = trace.getBoundingClientRect();
+      svg.setAttribute("width", trace.scrollWidth);
+      svg.setAttribute("height", trace.scrollHeight);
+      const pos = (id) => {
+        const el = trace.querySelector(`[data-id="${id}"]`);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return { l: r.left - box.left, r: r.right - box.left, y: r.top - box.top + r.height / 2 };
+      };
+      const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+      svg.innerHTML = on ? g.edges.filter(([a, b]) => on.has(a) && on.has(b)).map(([a, b]) => {
+        const p = pos(a), q = pos(b);
+        if (!p || !q) return "";
+        const [x1, x2] = p.r <= q.l ? [p.r, q.l] : [p.l, q.r];
+        const mx = (x1 + x2) / 2;
+        return `<path d="M${x1},${p.y} C${mx},${p.y} ${mx},${q.y} ${x2},${q.y}" fill="none" stroke="${accent}" stroke-width="1.4" opacity=".7"/>`;
+      }).join("") : "";
+    }
+    function pick(id) {
+      sel = id;
+      const up = walk(id, inn), down = walk(id, out);
+      const on = new Set([...up, ...down]);
+      trace.classList.add("dim");
+      trace.querySelectorAll(".tnode").forEach((b) => { b.classList.toggle("on", on.has(b.dataset.id)); b.classList.toggle("sel", b.dataset.id === id); });
+      drawEdges(on);
+      const n = byId.get(id);
+      const list = (ids) => g.columns.flatMap((col) => [...ids].filter((x) => x !== id && byId.get(x)?.kind === col)).map((x) => `<li><b class="mono">${x}</b> ${esc(byId.get(x).label)}</li>`).join("") || "<li class=\"small\">—</li>";
+      const extra = n.kind === "kpi" ? `<p class="small">Target ${esc(n.target)}${n.values ? ` · simulated median AS-IS ${n.values.asis} → TO-BE ${n.values.tobe}` : ` · measured ${esc(n.measured)}`}</p>` : n.parked ? `<p class="small">Parked: ${esc(n.parked)}</p>` : n.executable ? `<p class="small">Runs in CI on every change.</p>` : "";
+      document.getElementById("tpanel").innerHTML = `<div class="panel-h"><h2><span class="mono">${id}</span> · ${NAMES[n.kind]}</h2></div><div class="panel-b"><p style="margin-top:0">${esc(n.label)}</p>${extra}<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))"><div><h3 style="font-size:14px">Comes from</h3><ul class="small">${list(up)}</ul></div><div><h3 style="font-size:14px">Leads to</h3><ul class="small">${list(down)}</ul></div></div></div>`;
+      const el = trace.querySelector(`[data-id="${id}"]`);
+      el?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+    }
+    trace.addEventListener("click", (e) => { const b = e.target.closest(".tnode"); if (b) pick(b.dataset.id); });
+    document.querySelectorAll("[data-pick]").forEach((b) => b.addEventListener("click", () => pick(b.dataset.pick)));
+    document.getElementById("clear").addEventListener("click", () => {
+      sel = null;
+      trace.classList.remove("dim");
+      trace.querySelectorAll(".tnode").forEach((b) => b.classList.remove("on", "sel"));
+      svg.innerHTML = "";
+    });
+    window.addEventListener("resize", () => sel && pick(sel));
+    const q = new URLSearchParams(location.search).get("id");
+    if (q && byId.has(q)) pick(q);
+  </script>
+</body>
+</html>

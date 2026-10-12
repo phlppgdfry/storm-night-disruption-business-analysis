@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Storm Night Business Case</title>
+  <meta name="description" content="A business case with a range instead of a number: 200 simulated storm nights, a probability of loss, a tornado of the riskiest assumptions and a what-if you can drag.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="../"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#24508f"/><path d="M10 40c6-6 12-6 18 0s12 6 18 0 8-5 8-5" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>Storm Night</a>
+      <nav aria-label="Main">
+        <a href="../war-room/">War room</a>
+        <a href="./" aria-current="page">Business case</a>
+        <a href="../trace/">Trace</a>
+        <a href="../process/">Process</a>
+        <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis">Repository</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="sub-hero">
+      <p class="crumbs"><a href="../">Storm Night</a> / Business case</p>
+      <h1>A range, not a number</h1>
+      <p class="lede">Every figure here is generated from 44 stated assumptions by simulating the storm night 200 times, AS-IS and TO-BE on the same freight. Only three cost lines are counted in euros — and perishables at goodwill paid, not cargo value, because weather is force majeure.</p>
+    </section>
+
+    <section class="section" style="border-top:0;padding-top:8px">
+      <div class="grid cards-3">
+        <div class="card"><div class="stat-label">Saving per disruption event (median)</div><div class="stat" id="per-event">—</div><p class="small" id="per-event-range"></p></div>
+        <div class="card"><div class="stat-label">5-year NPV (median of 200 nights)</div><div class="stat" id="npv">—</div><p class="small" id="npv-range"></p></div>
+        <div class="card"><div class="stat-label">Chance of a negative NPV when every assumption is uncertain</div><div class="stat" id="pneg">—</div><p class="small" id="unc-range"></p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>AS-IS vs TO-BE, KPI by KPI</h2>
+      <p class="small">Median of 200 nights (10th–90th percentile). Same freight each night, so the difference is the process.</p>
+      <div class="table-wrap"><table id="kpi"></table></div>
+      <p class="small" style="margin-top:10px"><b>What the redesign cannot fix:</b> the average delay. It stays around 20 hours — a storm removes capacity, and no rule creates a ship.</p>
+    </section>
+
+    <section class="section" id="what-if">
+      <h2>What if we are wrong?</h2>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
+        <div>
+          <p class="small">Drag the three assumptions that move the answer most. The third one re-runs the simulation in your browser.</p>
+          <div class="slider-row"><label for="w-events">A-40 Disruption events per year</label><output id="o-events"></output><input type="range" id="w-events" min="1" max="12" step="1"></div>
+          <div class="slider-row"><label for="w-goodwill">A-37 Goodwill paid per late perishable (€)</label><output id="o-goodwill"></output><input type="range" id="w-goodwill" min="0" max="6000" step="250"></div>
+          <div class="slider-row"><label for="w-flag">A-05 Perishables flagged in the booking data</label><output id="o-flag"></output><input type="range" id="w-flag" min="0" max="1" step="0.05"></div>
+          <p class="small">A-05 is the one Tidewell controls: making the commodity code mandatory (US-02, D-05) moves it up.</p>
+        </div>
+        <div class="card">
+          <div class="stat-label">5-year NPV with these values (median of <span id="w-n">16</span> nights)</div>
+          <div class="big-npv" id="w-npv">—</div>
+          <p class="small" id="w-detail"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Tornado: which assumption to check first</h2>
+      <p class="small" id="tornado-note"></p>
+      <div class="tornado" id="tornado"></div>
+      <p class="small" style="margin-top:8px"><span class="dot open"></span> assumption at its low value · <span class="dot sailed"></span> at its high value · black line: base NPV · red line: zero</p>
+    </section>
+
+    <section class="section">
+      <h2>All 44 assumptions</h2>
+      <p class="small">From <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis/blob/main/model/assumptions.json"><code>model/assumptions.json</code></a>. A test fails if the model stops using one of them, or uses a number that is not listed.</p>
+      <div class="table-wrap"><table id="assumptions"></table></div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="wrap">Fictional operator; illustrative assumptions — not real company data. · <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis/blob/main/docs/06-simulation/business-case.md">Business case document</a></div></footer>
+  <script type="module">
+    import { simulate } from "../assets/lib/simulate.mjs";
+    import { businessCase } from "../assets/lib/business-case.mjs";
+    import { paramsFrom } from "../assets/lib/util.mjs";
+    const load = (f) => fetch(`../data/${f}`).then((r) => r.json());
+    const [R, storm, A] = await Promise.all([load("results.json"), load("storm-night.json"), load("assumptions.json")]);
+    const $ = (s) => document.querySelector(s);
+    const k = (v) => `${v < 0 ? "−" : ""}€${Math.abs(Math.round(v / 1000)).toLocaleString("en-GB")}k`;
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+    const bc = R.businessCase;
+    $("#per-event").textContent = k(bc.perEvent.p50);
+    $("#per-event-range").textContent = `P10 ${k(bc.perEvent.p10)} · P90 ${k(bc.perEvent.p90)} · payback ±${Math.round(bc.paybackMonthsP50)} months`;
+    $("#npv").textContent = k(bc.npv.p50);
+    $("#npv-range").textContent = `P10 ${k(bc.npv.p10)} · P90 ${k(bc.npv.p90)} — night-to-night randomness only`;
+    $("#pneg").textContent = `${Math.round(R.uncertainty.probabilityNegative * 1000) / 10}%`;
+    $("#unc-range").textContent = `${R.uncertainty.runs} runs drawing all assumptions from their ranges: NPV P10 ${k(R.uncertainty.npv.p10)}, P50 ${k(R.uncertainty.npv.p50)}, P90 ${k(R.uncertainty.npv.p90)}`;
+
+    const fmtR = (o) => `${o.p50.toLocaleString("en-GB")} <span class="small">(${o.p10.toLocaleString("en-GB")}–${o.p90.toLocaleString("en-GB")})</span>`;
+    $("#kpi").innerHTML = `<thead><tr><th>KPI</th><th class="num">AS-IS</th><th class="num">TO-BE</th></tr></thead><tbody>${Object.entries(R.kpiLabels).map(([key, label]) => `<tr><td>${esc(label)}</td><td class="num">${fmtR(R.asis[key])}</td><td class="num">${fmtR(R.tobe[key])}</td></tr>`).join("")}<tr><td><b>Influenceable cost of the night (€)</b></td><td class="num">${fmtR(R.asis.costTotal)}</td><td class="num">${fmtR(R.tobe.costTotal)}</td></tr></tbody>`;
+
+    // Tornado
+    const t = R.tornado;
+    const lo = Math.min(0, ...t.bars.map((b) => Math.min(b.npvLow, b.npvHigh)));
+    const hi = Math.max(...t.bars.map((b) => Math.max(b.npvLow, b.npvHigh)));
+    const x = (v) => ((v - lo) / (hi - lo)) * 100;
+    $("#tornado-note").textContent = `NPV with every assumption at its base value: ${k(t.npvBase)} (${R.runs.tornadoNights} nights). One assumption at a time to its low and high value; top 12 by swing.`;
+    $("#tornado").innerHTML = t.bars.map((b) => {
+      const l = Math.min(b.npvLow, t.npvBase), h = Math.max(b.npvHigh, t.npvBase);
+      const lowSide = b.npvLow < b.npvHigh;
+      const left = Math.min(b.npvLow, b.npvHigh), right = Math.max(b.npvLow, b.npvHigh);
+      return `<div class="row"><div><b class="mono">${b.id}</b> ${esc(b.label)}<div class="small">${b.low} → ${k(b.npvLow)} · ${b.high} → ${k(b.npvHigh)}</div></div>
+        <div class="track"><span class="${lowSide ? "seg-l" : "seg-h"}" style="left:${x(left)}%;width:${x(t.npvBase) - x(left)}%"></span><span class="${lowSide ? "seg-h" : "seg-l"}" style="left:${x(t.npvBase)}%;width:${x(right) - x(t.npvBase)}%"></span><span class="mid" style="left:${x(t.npvBase)}%"></span>${lo < 0 ? `<span class="zero" style="left:${x(0)}%"></span>` : ""}</div></div>`;
+    }).join("");
+
+    // Assumptions table
+    $("#assumptions").innerHTML = `<thead><tr><th>ID</th><th>Assumption</th><th class="num">Low</th><th class="num">Base</th><th class="num">High</th><th>Why</th></tr></thead><tbody>${A.assumptions.map((a) => `<tr><td class="mono">${a.id}</td><td>${esc(a.label)} <span class="small">(${esc(a.unit)})</span></td><td class="num">${a.low}</td><td class="num"><b>${a.value}</b></td><td class="num">${a.high}</td><td class="small">${esc(a.why)}</td></tr>`).join("")}</tbody>`;
+
+    // What-if
+    const base = paramsFrom(A);
+    const N = 16;
+    $("#w-n").textContent = N;
+    const ev = $("#w-events"), gw = $("#w-goodwill"), fl = $("#w-flag");
+    ev.value = base.eventsPerYear; gw.value = base.perishableLateCost; fl.value = base.perishableFlagged;
+    const cache = new Map();
+    const runsFor = (flag) => {
+      const key = flag.toFixed(2);
+      if (!cache.has(key)) {
+        const p = { ...base, perishableFlagged: flag };
+        const seeds = Array.from({ length: N }, (_, i) => i + 1);
+        cache.set(key, { asis: seeds.map((s) => simulate({ storm, params: p, seed: s, mode: "asis" })), tobe: seeds.map((s) => simulate({ storm, params: p, seed: s, mode: "tobe" })) });
+      }
+      return cache.get(key);
+    };
+    const recost = (r, p) => {
+      const perishables = r.perishablesLate * p.perishableLateCost, calls = r.agentHours * p.agentCostPerHour, withdrawn = r.withdrawn * p.marginPerUnit;
+      return { ...r, cost: { perishables, calls, withdrawn, total: perishables + calls + withdrawn } };
+    };
+    let timer;
+    function update() {
+      $("#o-events").textContent = ev.value;
+      $("#o-goodwill").textContent = `€${Number(gw.value).toLocaleString("en-GB")}`;
+      $("#o-flag").textContent = `${Math.round(fl.value * 100)}%`;
+      clearTimeout(timer);
+      $("#w-npv").style.opacity = ".5";
+      timer = setTimeout(() => {
+        const p = { ...base, eventsPerYear: Number(ev.value), perishableLateCost: Number(gw.value), perishableFlagged: Number(fl.value) };
+        const r = runsFor(p.perishableFlagged);
+        const res = businessCase(r.asis.map((x) => recost(x, p)), r.tobe.map((x) => recost(x, p)), p);
+        $("#w-npv").textContent = k(res.npv.p50);
+        $("#w-npv").style.color = res.npv.p50 < 0 ? "var(--risk)" : "var(--ok)";
+        $("#w-npv").style.opacity = "1";
+        $("#w-detail").textContent = `Saving per event ${k(res.perEvent.p50)} · per year ${k(res.perYear.p50)} · build €280k, run €40k/year, 8%, 5 years.`;
+      }, 60);
+    }
+    [ev, gw, fl].forEach((i) => i.addEventListener("input", update));
+    update();
+  </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "_note": "The storm night used throughout the case. Fictional operator (Tidewell Shortsea Lines), fictional figures. Times are minutes from Thursday 00:00.",
+  "route": "Continent terminal → Humber terminal",
+  "stormName": "Storm Kestrel",
+  "cancelDecisionAt": 960,
+  "cancelled": [
+    { "id": "TW-21", "departs": 1080 },
+    { "id": "TW-23", "departs": 1320 },
+    { "id": "TW-25", "departs": 1560 }
+  ],
+  "recovery": [
+    { "id": "TW-27", "departs": 1920, "lm": 1300, "plugs": 22, "adr": 4, "project": false },
+    { "id": "TWX-1", "departs": 2040, "lm": 3400, "plugs": 90, "adr": 16, "project": true, "relief": true },
+    { "id": "TW-29", "departs": 2160, "lm": 1200, "plugs": 20, "adr": 4, "project": false },
+    { "id": "TW-31", "departs": 2400, "lm": 1100, "plugs": 18, "adr": 3, "project": false },
+    { "id": "TW-33", "departs": 2640, "lm": 1500, "plugs": 24, "adr": 5, "project": true },
+    { "id": "TW-35", "departs": 2880, "lm": 1700, "plugs": 26, "adr": 5, "project": false },
+    { "id": "TW-37", "departs": 3120, "lm": 1700, "plugs": 26, "adr": 5, "project": true },
+    { "id": "TW-39", "departs": 3360, "lm": 1100, "plugs": 18, "adr": 3, "project": false },
+    { "id": "TW-41", "departs": 3600, "lm": 1000, "plugs": 16, "adr": 3, "project": false },
+    { "id": "TW-43", "departs": 3840, "lm": 1200, "plugs": 18, "adr": 3, "project": true },
+    { "id": "TW-45", "departs": 4080, "lm": 1400, "plugs": 20, "adr": 4, "project": false },
+    { "id": "TW-47", "departs": 4320, "lm": 1600, "plugs": 24, "adr": 4, "project": true },
+    { "id": "TW-49", "departs": 4560, "lm": 1600, "plugs": 24, "adr": 4, "project": false },
+    { "id": "TW-51", "departs": 4800, "lm": 1600, "plugs": 24, "adr": 4, "project": true },
+    { "id": "TW-53", "departs": 5040, "lm": 1600, "plugs": 24, "adr": 4, "project": false },
+    { "id": "TW-55", "departs": 5280, "lm": 1600, "plugs": 24, "adr": 4, "project": true },
+    { "id": "TW-57", "departs": 5520, "lm": 1600, "plugs": 24, "adr": 4, "project": false }
+  ],
+  "endAt": 5760
+}

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Storm Night War Room</title>
+  <meta name="description" content="Replay one storm night twice — today's phones against a rule-based recovery plan — then open the duty manager's board and the policy lab. Fictional operator, simulated in your browser.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="../"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#24508f"/><path d="M10 40c6-6 12-6 18 0s12 6 18 0 8-5 8-5" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>Storm Night</a>
+      <nav aria-label="Main">
+        <a href="./" aria-current="page">War room</a>
+        <a href="../numbers/">Business case</a>
+        <a href="../trace/">Trace</a>
+        <a href="../process/">Process</a>
+        <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis">Repository</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="sub-hero">
+      <p class="crumbs"><a href="../">Storm Night</a> / War room</p>
+      <h1>Storm Kestrel, replayed twice</h1>
+      <p class="lede">Same storm, same <span data-k="units">859</span> stranded units, same ships. Top: how Tidewell handles it today. Bottom: the recovery plan this case proposes. Everything below runs in your browser on the case's own rules and simulation.</p>
+      <div class="cta-row">
+        <button class="btn primary" id="btn-tour" type="button">▶ 2-minute guided tour</button>
+        <a class="btn" href="../numbers/">What it is worth</a>
+      </div>
+      <p class="small">Fictional operator and storm; illustrative assumptions. Night #<span data-k="seed">12</span> of 200 simulated nights — the one whose AS-IS cost is closest to the median.</p>
+    </section>
+
+    <div class="tabs" role="tablist" aria-label="War room views">
+      <button role="tab" id="t-replay" aria-controls="tab-replay" aria-selected="true">Replay the night</button>
+      <button role="tab" id="t-board" aria-controls="tab-board" aria-selected="false">Recovery board</button>
+      <button role="tab" id="t-lab" aria-controls="tab-lab" aria-selected="false">Policy lab</button>
+    </div>
+
+    <!-- REPLAY -->
+    <section id="tab-replay" role="tabpanel" aria-labelledby="t-replay">
+      <div class="controls" id="controls">
+        <button class="btn small-btn" id="play" type="button" aria-label="Play">▶ Play</button>
+        <span class="clock" id="clock" aria-live="off">Thu 16:00</span>
+        <input type="range" id="scrub" min="960" max="4080" step="10" value="960" aria-label="Time in the storm night">
+        <div class="seg" role="group" aria-label="Speed">
+          <button type="button" data-speed="1" aria-pressed="true">1×</button>
+          <button type="button" data-speed="4" aria-pressed="false">4×</button>
+        </div>
+      </div>
+      <div class="controls">
+        <span class="small">Jump to:</span>
+        <button class="btn small-btn" data-jump="1010" type="button">Thu 16:50</button>
+        <button class="btn small-btn" data-jump="1440" type="button">Fri 00:00</button>
+        <button class="btn small-btn" data-jump="1560" type="button">Fri 02:00</button>
+        <button class="btn small-btn" data-jump="1890" type="button">Fri 07:30</button>
+        <button class="btn small-btn" data-jump="2040" type="button">Fri 10:00</button>
+        <button class="btn small-btn" data-jump="3360" type="button">Sat 08:00</button>
+      </div>
+      <ul class="legend" aria-label="Legend">
+        <li><span class="dot open"></span>No answer yet</li>
+        <li><span class="dot held"></span>Held (customs)</li>
+        <li><span class="dot conf"></span>New sailing confirmed</li>
+        <li><span class="dot sailed"></span>Sailed</li>
+        <li><span class="dot gone"></span>Withdrawn by customer</li>
+        <li><span class="dot ring"></span>Perishable reefer</li>
+      </ul>
+      <div class="replay" id="replay">
+        <article class="lane" id="lane-asis">
+          <div class="lane-h"><h2>AS-IS — phones and account managers</h2><span class="small">customers call; agents rebook on lane metres only</span></div>
+          <div class="lane-b"><canvas aria-label="AS-IS: one dot per stranded unit"></canvas><div class="meters"></div></div>
+        </article>
+        <article class="lane" id="lane-tobe">
+          <div class="lane-h"><h2>TO-BE — recovery plan <span class="chip muted" id="tobe-policy">recommended policy</span></h2><span class="small">plan at +20 min, approved at +50, replanned hourly</span></div>
+          <div class="lane-b"><canvas aria-label="TO-BE: one dot per stranded unit"></canvas><div class="meters"></div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- BOARD -->
+    <section id="tab-board" role="tabpanel" aria-labelledby="t-board" hidden>
+      <p class="small measure">The duty manager's screen at <b>Thursday 16:50</b>, built by the real allocation module on this night's freight. Click any unit to see why it is where it is; try an override; approve the plan to see the messages. Nothing here is a mock-up row.</p>
+      <div class="panel" id="board-head">
+        <div class="board-head">
+          <div>
+            <b>Storm Kestrel</b> · plan proposed Thu 16:20 · <span id="b-total"></span> units
+            <div class="counts" id="b-counts"></div>
+          </div>
+          <button class="btn primary" id="b-approve" type="button">Approve plan</button>
+        </div>
+      </div>
+      <div class="board-grid" style="margin-top:16px">
+        <div class="grid">
+          <div class="panel" id="cap-panel">
+            <div class="panel-h"><h2>Recovery sailings</h2><span class="small">used / free capacity</span></div>
+            <div class="table-wrap" style="border:0;border-radius:0"><table class="cap-table" id="cap-table"></table></div>
+          </div>
+          <div class="panel" id="list-panel">
+            <div class="filters" id="filters" role="group" aria-label="Filter units"></div>
+            <ul class="ulist" id="ulist"></ul>
+            <p class="small" id="list-note" style="padding:8px 14px;margin:0"></p>
+          </div>
+        </div>
+        <aside class="panel" id="detail" aria-live="polite"></aside>
+      </div>
+    </section>
+
+    <!-- LAB -->
+    <section id="tab-lab" role="tabpanel" aria-labelledby="t-lab" hidden>
+      <p class="measure">Three departments wanted three different orders. Each proposal is written as rules and run on the <b>same 200 storm nights</b>. Bars are medians; shorter is better. Pick a policy to replay tonight's storm with it in the TO-BE lane.</p>
+      <div class="policy-grid" id="policies"></div>
+      <div class="panel" style="margin-top:16px" id="lab-tonight">
+        <div class="panel-h"><h2>Tonight (night #<span data-k="seed">12</span>) under each policy</h2><span class="small">simulated in your browser</span></div>
+        <div class="table-wrap" style="border:0;border-radius:0"><table id="lab-table"></table></div>
+      </div>
+      <p class="small">Decision D-04 and the trade-offs: <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis/blob/main/docs/03-workshops/policy-workshop.md">policy workshop</a>.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">Independent portfolio case study based on a fictional organisation (Tidewell Shortsea Lines). No confidential information from any real employer or hiring company. All figures are illustrative assumptions — not real company data. · <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis">Source</a></div>
+  </footer>
+  <script type="module" src="../assets/war-room.mjs"></script>
+</body>
+</html>

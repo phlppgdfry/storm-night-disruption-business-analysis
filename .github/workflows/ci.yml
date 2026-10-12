@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Executable examples, simulation invariants, traceability, document claims
+        run: node --test tests/*.test.mjs
+      - name: Regenerate every number and model, fail if anything drifted
+        run: |
+          node scripts/build-results.mjs
+          node scripts/check-trace.mjs
+          python3 scripts/build_bpmn.py
+          git diff --exit-code -- site/data docs/06-simulation/results.md docs/04-process/bpmn site/assets/bpmn
+      - name: BPMN files are well-formed XML
+        run: python3 -c "import glob, xml.dom.minidom as m; [m.parse(f) for f in glob.glob('docs/04-process/bpmn/*.bpmn')]; print('ok')"
+      - name: Links
+        run: python3 scripts/check-links.py

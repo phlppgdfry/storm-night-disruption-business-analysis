@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Storm Night Process</title>
+  <meta name="description" content="Event storming board and BPMN 2.0 AS-IS / TO-BE for the storm-night recovery, pains and goals marked on the steps.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="../"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#24508f"/><path d="M10 40c6-6 12-6 18 0s12 6 18 0 8-5 8-5" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>Storm Night</a>
+      <nav aria-label="Main">
+        <a href="../war-room/">War room</a>
+        <a href="../numbers/">Business case</a>
+        <a href="../trace/">Trace</a>
+        <a href="./" aria-current="page">Process</a>
+        <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis">Repository</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="sub-hero">
+      <p class="crumbs"><a href="../">Storm Night</a> / Process</p>
+      <h1>From the wall to the model</h1>
+      <p class="lede">A big-picture event storming of the storm night, then the AS-IS and TO-BE in BPMN 2.0. Red badges mark where each pain happens; green badges mark which goal a TO-BE step serves.</p>
+    </section>
+
+    <section class="section" id="event-storming" style="border-top:0">
+      <h2>Event storming — the storm night (AS-IS)</h2>
+      <ul class="es-legend">
+        <li><span class="swatch s-event"></span>Domain event</li><li><span class="swatch s-command"></span>Command</li><li><span class="swatch s-actor"></span>Actor</li>
+        <li><span class="swatch s-policy"></span>Policy</li><li><span class="swatch s-read"></span>Read model</li><li><span class="swatch s-hot"></span>Hotspot</li>
+      </ul>
+      <div class="board-scroll">
+        <div class="es-board">
+          <div class="es-col"><h3>Thu 16:00</h3><div class="sticky s-actor">Master + operations director</div><div class="sticky s-event">Sailings cancelled</div><div class="sticky s-event">Cancellation published on website</div><div class="sticky s-hot">Nobody has the list of stranded units (7 votes)</div></div>
+          <div class="es-col"><h3>Thu evening</h3><div class="sticky s-actor">Customer</div><div class="sticky s-event">Customer called</div><div class="sticky s-command">Rebook unit</div><div class="sticky s-read">Booking screen: lane metres only</div><div class="sticky s-event">Unit rebooked</div><div class="sticky s-hot">Order = who calls first (6 votes)</div></div>
+          <div class="es-col"><h3>Thu night</h3><div class="sticky s-actor">Haulier</div><div class="sticky s-event">Haulier arrived at gate</div><div class="sticky s-event">Yard full</div><div class="sticky s-hot">Hauliers come anyway (4)</div><div class="sticky s-event">Customer withdrew unit</div></div>
+          <div class="es-col"><h3>Fri 07:30</h3><div class="sticky s-actor">Account manager</div><div class="sticky s-event">Account managers started</div><div class="sticky s-event">Key account rebooked</div><div class="sticky s-hot">Key accounts handled last, not first</div></div>
+          <div class="es-col"><h3>Cut-off −90 min</h3><div class="sticky s-actor">Load planner</div><div class="sticky s-read">Plug / ADR spreadsheet</div><div class="sticky s-event">Cut-off reached</div><div class="sticky s-event">Unit bumped: no plug / ADR / deck / customs</div><div class="sticky s-hot">Constraints found at cut-off (6)</div><div class="sticky s-hot">Perishable not known (4)</div></div>
+          <div class="es-col"><h3>Departure</h3><div class="sticky s-event">Sailing departed with space left</div><div class="sticky s-event">Unit sailed</div><div class="sticky s-hot">Who presses send? (3)</div></div>
+          <div class="es-col"><h3>TO-BE draft</h3><div class="sticky s-policy">Whenever sailings are cancelled, list the stranded units</div><div class="sticky s-command">Build recovery plan</div><div class="sticky s-read">Recovery board</div><div class="sticky s-actor">Duty manager</div><div class="sticky s-command">Approve plan</div><div class="sticky s-policy">Whenever a plan is approved, message customers and text drivers</div><div class="sticky s-policy">Every hour, plan what is still open; never move a confirmed unit</div></div>
+        </div>
+      </div>
+      <p class="small">Hotspots with votes and who decided each: <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis/blob/main/docs/03-workshops/event-storming.md">event storming document</a>.</p>
+    </section>
+
+    <section class="section">
+      <h2>AS-IS — a storm night today</h2>
+      <figure class="bpmn-figure"><img src="../assets/bpmn/as-is.svg" alt="BPMN AS-IS: customers call or wait for account managers, agents rebook on lane metres only, the load planner bumps units at cut-off, hauliers wait in their cabs." loading="lazy"><figcaption>Pains P-01 … P-08 marked in red. <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis/blob/main/docs/04-process/bpmn/as-is.bpmn">as-is.bpmn</a> (BPMN 2.0, opens in Camunda Modeler or bpmn.io)</figcaption></figure>
+    </section>
+    <section class="section">
+      <h2>TO-BE — the recovery plan (release 1)</h2>
+      <figure class="bpmn-figure"><img src="../assets/bpmn/to-be.svg" alt="BPMN TO-BE: the recovery planner lists stranded units and builds a plan, the duty manager reviews, overrides and approves, customers and drivers are messaged, hourly replans." loading="lazy"><figcaption>Goals G-01 … G-06 marked in green. <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis/blob/main/docs/04-process/bpmn/to-be.bpmn">to-be.bpmn</a></figcaption></figure>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="wrap">Fictional organisation; illustrative figures. · <a href="https://github.com/phlppgdfry/storm-night-disruption-business-analysis">Source</a></div></footer>
+</body>
+</html>
