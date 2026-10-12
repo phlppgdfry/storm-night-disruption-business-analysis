@@ -6,9 +6,13 @@
 
 > *Independent portfolio case study based on a fictional organisation (Tidewell Shortsea Lines). It contains no confidential information from any real employer or the hiring company. All figures are illustrative assumptions — not real company data.*
 
-**[▶ Replay the storm night (2-min tour)](https://phlppgdfry.github.io/storm-night-disruption-business-analysis/war-room/?tour)** · **[Live site](https://phlppgdfry.github.io/storm-night-disruption-business-analysis/)** · **[Start here](START-HERE.md)** · **[Evidence](EVIDENCE.md)** · **[All documents](docs/00-documentation-map.md)**
+**[▶ Replay the storm night (2-min tour)](https://phlppgdfry.github.io/storm-night-disruption-business-analysis/war-room/?tour)** · **[Live site](https://phlppgdfry.github.io/storm-night-disruption-business-analysis/)** · **[One-page summary (PDF)](site/media/one-page-summary.pdf)** · **[Start here](START-HERE.md)** · **[Evidence](EVIDENCE.md)** · **[All documents](docs/00-documentation-map.md)**
 
 [![CI](https://github.com/phlppgdfry/storm-night-disruption-business-analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/phlppgdfry/storm-night-disruption-business-analysis/actions/workflows/ci.yml)
+
+[![The storm night replayed: AS-IS above, TO-BE below. One dot per stranded unit; red is no answer yet, amber is a confirmed new sailing, green has sailed.](site/media/storm-night.gif)](https://phlppgdfry.github.io/storm-night-disruption-business-analysis/war-room/?tour)
+
+*Thursday 16:00 to Saturday 09:00, the same storm twice. Top: today, customers call and wait. Bottom: the recovery plan. Red = no answer yet, amber = new sailing confirmed, green = sailed.*
 
 ## The night
 
@@ -79,12 +83,12 @@ Go live & measure       pre-mortem · shadow mode · go/no-go · rollback · hyp
 | [`model/`](model/) | `trace.json` (traceability), `assumptions.json` (44 assumptions with ranges), `storm-night.json` (sailings and capacity) |
 | [`site/assets/lib/`](site/assets/lib/) | `allocate.mjs` (the rules), `simulate.mjs` (the storm night), `scenario.mjs`, `business-case.mjs` — plain JavaScript, no dependencies, the same code in CI and in the browser |
 | [`tests/`](tests/) | 23 allocation examples, simulation invariants, traceability, documents-quote-the-model |
-| [`scripts/`](scripts/) | `build-results.mjs` (200 nights → results), `check-trace.mjs`, `build_bpmn.py`, `build_workbook.py`, `check-links.py` |
+| [`scripts/`](scripts/) | `build-results.mjs` (200 nights → results), `check-trace.mjs`, `build_bpmn.py`, `build_workbook.py`, `build_media.py` (GIF, social card, one-page PDF), `check-links.py` |
 | [`data/`](data/) | Excel workbook: assumptions, simulation medians, business case with live formulas, policies, tornado |
-| `site/` | GitHub Pages: landing, war room (replay · recovery board · policy lab), business case, trace explorer, process |
+| `site/` | GitHub Pages: landing, war room (replay · recovery board · policy lab), business case, trace explorer, process; `site/media/` holds the GIF, social card and one-page summary |
 
 ```bash
-node --test tests/*.test.mjs        # 42 tests: examples, invariants, trace, document claims
+node --test tests/*.test.mjs        # 43 tests: examples, invariants, trace, document claims
 node scripts/build-results.mjs      # re-run 200 + 200 nights and the tornado (±1 min)
 node scripts/check-trace.mjs        # traceability chain
 python3 -m http.server -d site      # the site, locally

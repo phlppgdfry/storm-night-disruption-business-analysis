@@ -76,3 +76,9 @@ claims("README.md", [
   `| ${c90a} | **${c90t}** |`, `| ${pla} | **${plt}**`, `| ${ya} | **${yt}** |`, `| ${n(da)} | **${n(dt)}** |`, `| ${wa} | **${wt}** |`,
   `**${k(bc.npv.p50)} · ${Math.round(R.uncertainty.probabilityNegative * 1000) / 10}%**`,
 ]);
+
+// The one-page summary (HTML, printed to PDF by scripts/build_media.py) quotes the same medians.
+claims("site/media/one-page-summary.html", [
+  `<td>${c90a}</td><td><b>${c90t}</b>`, `<td>${pla}</td><td><b>${plt}</b>`, `<td>${ya}</td><td><b>${yt}</b>`, `<td>${n(da)}</td><td><b>${n(dt)}</b>`,
+  `<td>${wa}</td><td><b>${wt}</b>`, `<td>${ca}</td><td><b>${ct}</b>`, `${k(bc.npv.p50)}</span>`, `<b>${Math.round(R.uncertainty.probabilityNegative * 1000) / 10}%</b>`,
+]);
