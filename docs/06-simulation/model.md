@@ -52,7 +52,7 @@ Fifteen KPIs per night, linked to the goals in the [traceability model](../../mo
 | **No ship overloaded** | For every sailing: lane metres, plugs, ADR, deck within limits, in both modes | test: *no sailing carries more than …* |
 | **Nobody forgotten** | Every unit ends the weekend sailed or withdrawn | test: *every unit ends …* |
 | **Every assumption used** | The model's parameters are wrapped in a proxy that records every read; the test fails if an assumption is documented but unused, or used but undocumented | test: *every documented assumption …* |
-| **The rules are the tested rules** | TO-BE calls the same `buildPlan()` as the 22 examples | [`allocation.feature`](../05-rules/features/allocation.feature) |
+| **The rules are the tested rules** | TO-BE calls the same `buildPlan()` as the 23 examples | [`allocation.feature`](../05-rules/features/allocation.feature) |
 | **Face validity** | Night #12 replayed step by step with the duty manager and the load planner, against their memory of the last storm: "the 07:30 account-manager wave is exactly right"; "too few bumps — on a real night it's more" (so the AS-IS is, if anything, too kind) | [reconstruction](../01-the-night/storm-kestrel-reconstruction.md) |
 | **Quoted numbers cannot drift** | `scripts/build-results.mjs` regenerates [results.md](results.md) and `site/data/results.json`; CI fails if they changed | CI |
 
